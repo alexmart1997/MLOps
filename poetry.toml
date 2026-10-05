@@ -1,0 +1,5 @@
+[virtualenvs]
+# Виртуальное окружение создаётся внутри проекта (.venv/) — IDE и pre-commit
+# находят его автоматически. Сам .venv в git не коммитится (см. .gitignore),
+# воспроизводимость обеспечивают pyproject.toml + poetry.lock.
+in-project = true
