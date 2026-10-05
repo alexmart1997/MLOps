@@ -1,0 +1,8 @@
+[flake8]
+# flake8 не читает pyproject.toml, поэтому конфиг здесь.
+max-line-length = 99
+max-complexity = 10
+# E203, W503 конфликтуют со стилем black.
+extend-ignore = E203, W503
+extend-select = B
+exclude = .git, .venv, __pycache__, build, dist, notebooks
