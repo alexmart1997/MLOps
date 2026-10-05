@@ -1,0 +1,64 @@
+# Установка хуков: `make install` (или `poetry run pre-commit install`).
+# Ручной прогон по всем файлам: `make lint`.
+#
+# black / isort / flake8 / mypy запускаются из poetry-окружения проекта
+# (repo: local), поэтому их версии зафиксированы в poetry.lock и совпадают
+# локально, в pre-commit и в CI.
+default_language_version:
+  python: python3
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: detect-private-key
+      - id: no-commit-to-branch
+        args: [--branch, main, --branch, master]
+
+  # Ноутбуки коммитятся без выводов: меньше диффы, нет утечки данных в git.
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.9.1
+    hooks:
+      - id: nbstripout
+
+  - repo: local
+    hooks:
+      - id: poetry-check
+        name: poetry check (pyproject.toml & poetry.lock in sync)
+        entry: poetry check --lock
+        language: system
+        files: ^(pyproject\.toml|poetry\.lock)$
+        pass_filenames: false
+
+      - id: isort
+        name: isort
+        entry: poetry run isort
+        language: system
+        types: [python]
+
+      - id: black
+        name: black
+        entry: poetry run black
+        language: system
+        types: [python]
+
+      - id: flake8
+        name: flake8
+        entry: poetry run flake8
+        language: system
+        types: [python]
+
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy
+        language: system
+        types: [python]
+        files: ^src/
+        pass_filenames: false
