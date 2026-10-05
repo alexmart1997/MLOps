@@ -1,0 +1,37 @@
+# Базовый CI: линтеры + тесты. Кэш poetry-окружения привязан к хэшу poetry.lock.
+image: python:3.12-slim
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+
+cache:
+  key:
+    files: [poetry.lock]
+  paths: [.cache/pip, .venv/]
+
+stages: [lint, test]
+
+before_script:
+  - pip install "poetry>=2.0,<3.0"
+  - poetry install --no-interaction
+
+lint:
+  stage: lint
+  script:
+    - poetry check --lock
+    - poetry run isort --check-only --diff .
+    - poetry run black --check .
+    - poetry run flake8
+    - poetry run mypy
+
+test:
+  stage: test
+  script:
+    - poetry run pytest --cov-report=xml
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml

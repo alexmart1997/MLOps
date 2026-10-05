@@ -1,0 +1,37 @@
+# Виртуальное окружение (воспроизводится из poetry.lock: `poetry install`)
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Инструменты
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+.ipynb_checkpoints/
+catboost_info/
+
+# Секреты
+.env
+
+# Данные и артефакты — не в git (версионируются отдельно: DVC / артефакты CI)
+data/**
+!data/**/
+!data/**/.gitkeep
+models/*
+!models/.gitkeep
+reports/*
+!reports/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
